@@ -4,6 +4,8 @@ git init
 # Se connecter au projet
 git remote add origin https://github.com/SuperGuirlande/virtual-vitis.git
 
+git remote -v
+
 # Récupérer les modifications
 git pull origin main 
 
@@ -11,3 +13,7 @@ git pull origin main
 git add .
 git commit -m "Description des modifications"
 git push origin main
+
+
+Nombre d'heures passées : 5heures au 11/01
+
