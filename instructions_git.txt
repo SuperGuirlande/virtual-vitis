@@ -1,0 +1,13 @@
+# Initialiser une liaison
+git init
+
+# Se connecter au projet
+git remote add origin https://github.com/SuperGuirlande/virtual-vitis.git
+
+# Récupérer les modifications
+git pull origin main 
+
+# Envoyer les modifications
+git add .
+git commit -m "Description des modifications"
+git push origin main
