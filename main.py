@@ -1,4 +1,5 @@
 from plant_scrap import main as plant_scrap
+from traitement_datas import main as traitement_datas
 import os
 
 ### PROGRAMME PRINCIPAL ###
@@ -17,7 +18,7 @@ def create_data_directory():
 def main():
     create_data_directory()
     
-    choice = input("\n\n----- ### AGRICULTEUR 2.0 ### -----\nL'assistant virtuel de l'agriculture\n\n----- CHOISISSEZ UNE ACTION -----\n1: RÉCUPÉRER LES DONNÉES D'UNE PLANTE\n2: Arrêter le programme\nVotre choix > ")
+    choice = input("\n\n----- ### AGRICULTEUR 2.0 ### -----\nL'assistant virtuel de l'agriculture\n\n----- CHOISISSEZ UNE ACTION -----\n1: RÉCUPÉRER LES DONNÉES D'UNE PLANTE\n2: PROGRAMME DE TRAITEMENT DES DONNES\n3: Arrêter le programme\nVotre choix > ")
     ##### CHOIX 1 : RECUPERER LES DONNEES D'UNE PLANTE #####
     if choice == "1":
         # Récupérer le nom de la plante
@@ -48,7 +49,10 @@ def main():
         print("LANCEMENT DU PROGRAMME")
         print("--------------------------------")
         plant_scrap(plant_url, plant, page_number)
+
     elif choice == "2":
+        traitement_datas()
+    elif choice == "3":
         print("Arrêt du programme")
         exit()
     else:
