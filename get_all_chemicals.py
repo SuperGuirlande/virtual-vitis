@@ -15,6 +15,22 @@ def get_chemicals_links(page):
     return chemical_links
 
 
+def get_ubiquitous_status(page):
+    """Récupère le statut ubiquitous du chemical"""
+    try:
+        # Attendre que l'élément soit présent
+        page.wait_for_selector('.field--name-chemical-is-ubiquitous .field--item', timeout=5000)
+        ubiquitous_element = page.query_selector('.field--name-chemical-is-ubiquitous .field--item')
+        if ubiquitous_element:
+            status = ubiquitous_element.inner_text().strip()
+            print(f"→ Statut ubiquitous: {status}")  # Debug
+            return status
+        print("→ Élément ubiquitous non trouvé")  # Debug
+        return "Not found"
+    except Exception as e:
+        print(f"Erreur lors de la récupération du statut ubiquitous: {e}")
+        return "Error"
+
 
 # Naviguer vers la page suivante
 def navigate_to_page(page, current_page_number):
@@ -45,7 +61,7 @@ def main():
 
         activities_data = []
         plants_data = []
-
+        ubiquitous_data = []  # Nouvelle liste pour les données ubiquitous
 
         current_page = int(start_page)
         chemicals_number = 0
@@ -72,10 +88,20 @@ def main():
                     print(f"→ Métabolites {chemicals_number}: {chemical['name']}")
 
                     try:
+                        # D'abord aller sur la page du chemical
+                        print(f"→ Navigation vers {chemical['url']}")
+                        page.goto(chemical['url'])
+                        time.sleep(1)  # Attendre un peu plus longtemps
+                        
+                        # Ensuite récupérer le statut ubiquitous
+                        ubiquitous_status = get_ubiquitous_status(page)
+                        ubiquitous_data.append({
+                            'chemical': chemical['name'],
+                            'is_ubiquitous': ubiquitous_status
+                        })
+
                         # Récupère les activités
                         print(f"→ Récupération des activités")
-                        page.goto(chemical['url'])
-                        time.sleep(.3)
                         activities = get_tab_data(page, chemical, "Activities")
                         activities_data.extend(activities)
 
@@ -92,9 +118,11 @@ def main():
                         # Sauvegarder les datas
                         pd.DataFrame(activities_data).to_csv("datas/all_chemicals_activities.csv", index=False, mode='a', header=False)
                         pd.DataFrame(plants_data).to_csv("datas/all_chemicals_plants.csv", index=False, mode='a', header=False)
+                        pd.DataFrame(ubiquitous_data).to_csv("datas/chemicals_ubiquitous.csv", index=False, mode='a', header=False)
 
                         plants_data = []
                         activities_data = []
+                        ubiquitous_data = []
 
                     except Exception as e:
                         print(f"n✗ Erreur {e}")
