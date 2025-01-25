@@ -15,5 +15,5 @@ git commit -m "Description des modifications"
 git push origin main
 
 
-Nombre d'heures passées : 5heures au 11/01
+Nombre d'heures passées : 7heures au 11/01
 
