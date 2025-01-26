@@ -82,7 +82,7 @@ def get_tab_data(page, chemical, tab_type):
                 
             next_button.click()
             page.wait_for_load_state("networkidle", timeout=5000)
-            time.sleep(1)
+            # time.sleep(1)
             
             page_number += 1
             print(f"   → {tab_type} page {page_number}")
@@ -158,7 +158,7 @@ def navigate_to_page(page, current_page_number):
         next_button = page.locator('.pager__item--next a').first
         if next_button.is_visible():
             next_button.click()
-            time.sleep(1.5)
+            time.sleep(.5)
             print("✓")
             return True
         else:

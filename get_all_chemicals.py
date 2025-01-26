@@ -38,7 +38,6 @@ def navigate_to_page(page, current_page_number):
         base_url = f"https://phytochem.nal.usda.gov/?type=chemical&keyword=&page={current_page_number}"
         page.goto(base_url)
         page.wait_for_load_state("networkidle")
-        time.sleep(0.5)
         return True
     except Exception as e:
         print(f"n✗ Erreur {e}")
@@ -73,7 +72,7 @@ def main():
                 if not navigate_to_page(page, current_page):
                     break
 
-                print(f"Page {current_page + 1}")
+                print(f"\n####### PAGE {current_page + 1} #######")
 
                 # Récupère tous les chemicals
                 chemicals = get_chemicals_links(page)
@@ -85,13 +84,13 @@ def main():
                 # Récupérer tous les liens visibles
                 for chemical in chemicals:
                     chemicals_number += 1
-                    print(f"→ Métabolites {chemicals_number}: {chemical['name']}")
+                    print(f"\n### Métabolite {chemicals_number}: {chemical['name']}")
 
                     try:
                         # D'abord aller sur la page du chemical
                         print(f"→ Navigation vers {chemical['url']}")
                         page.goto(chemical['url'])
-                        time.sleep(1)  # Attendre un peu plus longtemps
+                        time.sleep(.5)  # Attendre un peu plus longtemps
                         
                         # Ensuite récupérer le statut ubiquitous
                         ubiquitous_status = get_ubiquitous_status(page)
@@ -109,7 +108,7 @@ def main():
                         print(f"→ Récupération des plantes")
 
                         page.click('#quicktabs-tab-chemical-1 a')
-                        time.sleep(.3)
+                        time.sleep(.2)
 
                         plants = get_tab_data(page, chemical, "Plants")
                         plants_data.extend(plants)
