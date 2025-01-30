@@ -1,6 +1,7 @@
 from playwright.sync_api import sync_playwright
 import pandas as pd
 import time
+from config import SELECTORS, TIMEOUTS, BROWSER_CONFIG, BASE_PLANT_URL
 
 ### FONCTIONNEMENT DU PROGRAMME ###
 
@@ -34,7 +35,8 @@ def get_chemicals_links(page):
 
 # Récupérer les infos des tableaux de la page du chemical
 def get_tab_data(page, chemical, tab_type):
-    has_table = page.evaluate('''() => document.querySelector('.table') !==null;''')
+    has_table = page.evaluate(f'''() => document.querySelector('{SELECTORS["table"]}') !==null;''')
+    
     # On vérifie si c'est le tableau Activities ou Plants
     if not has_table:
         if tab_type == "Plants":
@@ -65,10 +67,7 @@ def get_tab_data(page, chemical, tab_type):
     all_tab_data.extend(table_data)
     
     # Sélectionner le bon conteneur de pagination selon l'onglet
-    if tab_type == "Plants":
-        pagination_selector = '#quicktabs-tabpage-chemical-1 .pager__item--next a'
-    else:  # Activities
-        pagination_selector = '#quicktabs-tabpage-chemical-0 .pager__item--next a'
+    pagination_selector = SELECTORS['plants_pagination'] if tab_type == "Plants" else SELECTORS['activities_pagination']
     
     page_number = 1
     print(f"   → {tab_type} page {page_number}")
@@ -82,7 +81,7 @@ def get_tab_data(page, chemical, tab_type):
                 
             next_button.click()
             page.wait_for_load_state("networkidle", timeout=5000)
-            # time.sleep(1)
+            time.sleep(TIMEOUTS['pagination'])
             
             page_number += 1
             print(f"   → {tab_type} page {page_number}")
@@ -239,10 +238,12 @@ def main(plant_url, plant_name, page_number=float('inf')):
                     time.sleep(0.5)
                     plants = get_tab_data(page, chemical, "Plants")
                     plants_data.extend(plants)
+                    time.sleep(.3)
                     
                     # Sauvegarder après chaque produit
                     plants_df = pd.DataFrame(plants_data)
                     plants_df.to_csv(plants_file, index=False)
+                    time.sleep(.3)
                 except Exception as e:
                     print(f"Erreur sur {chemical['name']} : {e}")
                     continue
